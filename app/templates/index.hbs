@@ -1,0 +1,116 @@
+{{outlet}}
+<div class="content-container">
+    <div class="col-sm-offset-2 col-sm-8">
+        <!-- Current Tasks -->
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="panel-heading tasks-header">
+                    משימות
+                    <button id="showAdd" onclick="showAdd()">
+                        <img src="/assets/add.png">
+                    </button>
+                </div>
+                <table class="table table-striped task-table">
+                    <thead>
+                    <th>&nbsp;</th>
+                    <th>&nbsp;</th>
+                    </thead>
+                    <tbody>
+                    {{#each model as |task index|}}
+                        <tr>
+                        <!-- Task Status Button -->
+                        <td>
+                            <button type="submit" class="delete" id="del-{{task.id}}"
+                                    onclick={{action 'deleteTask' task.id}}
+                            >
+                                X
+                            </button>
+                        </td>
+                        <td class="table-text">
+                            <div id="task-{{task.id}}" style={{if task.status "text-decoration: line-through;"}}>
+                                {{sum index 1}}.
+                                <span class="task-name" id="task-name-{{task.id}}">
+                                    {{task.name}}
+                                </span>
+                                <input class="task-name" id="task-name-input-{{task.id}}"
+                                      onblur={{action 'editTask' task.id}}
+                                      value="{{task.name}}" maxlength="20" />
+                                <button id="task-name-save-{{task.id}}"
+                                        class="btn btn-success btn-sm"
+                                        onclick={{action 'editTask' task.id}} >Save</button>
+                            </div>
+                        </td>
+
+                        <!-- Task Delete Button -->
+                        <td class="delete-button">
+                            <label class="container">
+                                <input type="checkbox" id="chk-{{task.id}}" checked={{task.status}}
+                                       onchange={{action 'toggleStatus' task.id}} value="{{task.status}}">
+                                <span class="checkmark"></span>
+                            </label>
+                        </td>
+                        </tr>
+                    {{/each}}
+                    </tbody>
+                </table>
+            </div>
+            <div id="totals">
+                <span class="totals">
+                    <span id="total">{{model.length}}</span>
+                    :סה"כ
+                </span>
+                <span class="totals">
+                    <span class="totalNum" id="completed" >
+                        {{total model true}}
+                    </span>
+                    :הושלמו
+                </span>
+                <span class="totals">
+                    <span class="totalNum" id="opened">
+                        {{total model false}}
+                    </span>:לסיום
+                </span>
+            </div>
+        </div>
+
+        <div id="addForm" class="panel panel-default">
+            <div class="panel-heading">
+                משימה חדשה
+            </div>
+
+            <div class="panel-body">
+                <!-- Display Validation Errors -->
+                {{#each task.errors.messages as |message|}}
+                    <div class="alert alert-danger">
+                        <li>{{message}}</li>
+                    </div>
+                {{/each}}
+
+                    <!-- Task Name -->
+                    <div class="form-group">
+                        <label for="task-name" class="col-sm-3 control-label">משימה</label>
+
+                        <div class="col-sm-6">
+                            <input type="text" name="add_task_name" id="add_task_name" class="form-control"
+                                   value="">
+                        </div>
+                    </div>
+
+                    <!-- Add Task Button -->
+                    <div class="form-group">
+                        <div class="col-sm-offset-3 col-sm-6">
+                            <button type="submit" class="btn btn-default"
+                                    onclick={{action 'addTask'}}
+                            >
+                                <i class="fa fa-btn fa-plus"></i>להוסיף
+                            </button>
+                        </div>
+                    </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script>
+    init();
+</script>
